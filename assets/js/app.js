@@ -1,0 +1,88 @@
+// ==== CONFIG: paste your Google Sheet ID here ====
+}
+}
+
+
+function render(i) {
+const s = stories[i];
+if (!s) return;
+storyTitle.textContent = s.title;
+storyBody.innerHTML = s.body.replace(/
+/g, '<br>');
+
+
+if (s.imageUrl) {
+storyImage.src = s.imageUrl;
+storyImageWrap.hidden = false;
+} else {
+storyImageWrap.hidden = true;
+storyImage.removeAttribute('src');
+}
+
+
+prevBtn.disabled = (i <= 0);
+nextBtn.disabled = (i >= stories.length - 1);
+}
+
+
+function buildArchive() {
+archiveList.innerHTML = '';
+stories.forEach((s, i) => {
+const li = document.createElement('li');
+const btn = document.createElement('button');
+btn.className = 'archive-item';
+btn.textContent = s.title;
+btn.addEventListener('click', () => {
+index = i;
+render(index);
+archive.hidden = true;
+});
+li.appendChild(btn);
+archiveList.appendChild(li);
+});
+}
+
+
+nextBtn.addEventListener('click', () => { if (index < stories.length - 1) render(++index); });
+prevBtn.addEventListener('click', () => { if (index > 0) render(--index); });
+
+
+archiveBtn.addEventListener('click', () => { archive.hidden = false; });
+closeArchive.addEventListener('click', () => { archive.hidden = true; });
+
+
+shareBtn.addEventListener('click', () => {
+const s = stories[index];
+const url = window.location.href.split('#')[0];
+const text = `${s.title} — Mafia in English`;
+
+
+if (navigator.share) {
+navigator.share({ title: s.title, text, url }).catch(() => {});
+return;
+}
+
+
+// Fallback quick links
+const encodedUrl = encodeURIComponent(url);
+const encodedText = encodeURIComponent(text);
+const tg = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+const wa = `https://wa.me/?text=${encodedText}%20${encodedUrl}`;
+const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+const tw = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+
+
+const menu = document.createElement('div');
+menu.className = 'share-menu';
+menu.innerHTML = `
+<a href="${tg}" target="_blank" rel="noopener">Telegram</a>
+<a href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+<a href="${fb}" target="_blank" rel="noopener">Facebook</a>
+<a href="${tw}" target="_blank" rel="noopener">X</a>
+`;
+document.body.appendChild(menu);
+setTimeout(() => menu.remove(), 5000);
+});
+
+
+loadStories();
