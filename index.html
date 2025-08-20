@@ -1,74 +1,71 @@
 <!doctype html>
-storyImage.removeAttribute('src');
-}
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mafia in English — Stories</title>
+<link rel="icon" href="assets/img/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+<meta name="color-scheme" content="dark" />
+</head>
+<body>
+<!-- Intro / Header -->
+<header class="wrap header">
+<div class="brand">
+<div class="logo">🐈‍⬛🎩</div>
+<div class="titles">
+<h1>Mafia in English</h1>
+<p class="tagline">Playful mafia vibes from Minsk — in English</p>
+</div>
+</div>
 
 
-prevBtn.disabled = (i <= 0);
-nextBtn.disabled = (i >= stories.length - 1);
-}
+<div class="header-actions">
+<button id="archiveBtn" class="btn ghost">Archive</button>
+<button id="shareBtn" class="btn">Share</button>
+</div>
+</header>
 
 
-function buildArchive() {
-archiveList.innerHTML = '';
-stories.forEach((s, i) => {
-const li = document.createElement('li');
-const btn = document.createElement('button');
-btn.className = 'archive-item';
-btn.textContent = s.title;
-btn.addEventListener('click', () => {
-index = i;
-render(index);
-archive.hidden = true;
-});
-li.appendChild(btn);
-archiveList.appendChild(li);
-});
-}
+<!-- Story Viewer -->
+<main class="wrap viewer" aria-live="polite">
+<article id="storyCard" class="card">
+<h2 id="storyTitle" class="story-title">Loading…</h2>
+<div id="storyImageWrap" class="story-image-wrap" hidden>
+<img id="storyImage" alt="Story image" />
+</div>
+<div id="storyBody" class="story-body">Please wait…</div>
+</article>
 
 
-nextBtn.addEventListener('click', () => { if (index < stories.length - 1) render(++index); });
-prevBtn.addEventListener('click', () => { if (index > 0) render(--index); });
+<nav class="nav">
+<button id="prevBtn" class="btn ghost" disabled>← Previous</button>
+<button id="nextBtn" class="btn" disabled>Next →</button>
+</nav>
+</main>
 
 
-archiveBtn.addEventListener('click', () => { archive.hidden = false; });
-closeArchive.addEventListener('click', () => { archive.hidden = true; });
+<!-- Archive Drawer -->
+<aside id="archive" class="archive" hidden>
+<div class="archive-inner">
+<div class="archive-top">
+<h3>Archive</h3>
+<button id="closeArchive" class="btn icon" aria-label="Close">✕</button>
+</div>
+<ul id="archiveList" class="archive-list"></ul>
+</div>
+</aside>
 
 
-shareBtn.addEventListener('click', () => {
-const s = stories[index];
-const url = window.location.href.split('#')[0];
-const text = `${s.title} — Mafia in English`;
+<footer class="wrap footer">
+<small>© <span id="year"></span> Mafia in English · All fun, no drama</small>
+</footer>
 
 
-if (navigator.share) {
-navigator.share({ title: s.title, text, url }).catch(() => {});
-return;
-}
-
-
-// Fallback quick links
-const encodedUrl = encodeURIComponent(url);
-const encodedText = encodeURIComponent(text);
-const tg = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
-const wa = `https://wa.me/?text=${encodedText}%20${encodedUrl}`;
-const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-const tw = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
-
-
-const menu = document.createElement('div');
-menu.className = 'share-menu';
-menu.innerHTML = `
-<a href="${tg}" target="_blank" rel="noopener">Telegram</a>
-<a href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-<a href="${fb}" target="_blank" rel="noopener">Facebook</a>
-<a href="${tw}" target="_blank" rel="noopener">X</a>
-`;
-document.body.appendChild(menu);
-setTimeout(() => menu.remove(), 5000);
-});
-
-
-loadStories();
-</script>
+<!-- Load JS from external file so it never prints as text -->
+<script src="assets/js/app.js"></script>
 </body>
 </html>
